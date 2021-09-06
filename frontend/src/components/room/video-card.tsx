@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Peer from 'simple-peer';
-import { expandScreen } from './room.service';
+import { expandScreen } from '../../helpers/room';
 import { VideoWrapper, Username, VideoCardContainer } from './video-card.styles';
 const VideoCard = ({ peer, size }: { peer: Peer, size: string }) => {
   const ref: any = useRef();

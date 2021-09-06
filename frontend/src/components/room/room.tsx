@@ -7,7 +7,7 @@ import VideoCard from './video-card';
 import { VideoWrapper } from './video-card.styles';
 import { userInfoInterface, userVideoAudioInterface } from 'src/shared/interfaces/user-info.interface';
 import { RouteComponentProps } from 'react-router-dom';
-import { addPeer, createPeer, expandScreen, findPeer, goToBack } from './room.service';
+import { addPeer, createPeer, expandScreen, findPeer, goToBack } from '../../helpers/room';
 import VideoSettings from './room-settings';
 
 const Room = ({ match }: RouteComponentProps<{ roomID?: string}>) => {
