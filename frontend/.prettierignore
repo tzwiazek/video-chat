@@ -1,0 +1,4 @@
+node_modules
+gatsby-config.js
+tsconfig.json
+eslintrc.js

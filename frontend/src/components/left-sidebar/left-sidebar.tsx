@@ -1,10 +1,10 @@
 import React from 'react';
-import { IconContainer, Icon, IconWrapper, MainMenuContainer, Menu } from "./left-sidebar.styles";
-import LogoIcon from "../../assets/images/logo.svg";
-import settingsIcon from "../../assets/images/settings.svg";
-import homeIcon from "../../assets/images/home.svg";
-import chatIcon from "../../assets/images/chats.svg";
-import contactsIcon from "../../assets/images/contact.svg";
+import { IconContainer, Icon, IconWrapper, MainMenuContainer, Menu } from './left-sidebar.styles';
+import LogoIcon from '../../assets/images/logo.svg';
+import settingsIcon from '../../assets/images/settings.svg';
+import homeIcon from '../../assets/images/home.svg';
+import chatIcon from '../../assets/images/chats.svg';
+import contactsIcon from '../../assets/images/contact.svg';
 import { Link } from 'react-router-dom';
 
 const LeftSidebar = () => {
@@ -18,7 +18,7 @@ const LeftSidebar = () => {
         </IconWrapper>
       </Link>
       <MainMenuContainer>
-      <Link to="/home">
+        <Link to="/home">
           <IconWrapper menuList>
             <Icon src={homeIcon} />
           </IconWrapper>
@@ -42,7 +42,7 @@ const LeftSidebar = () => {
         </IconWrapper>
       </Link>
     </Menu>
-  )
-}
+  );
+};
 
 export default LeftSidebar;

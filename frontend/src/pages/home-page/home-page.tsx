@@ -1,19 +1,27 @@
-import React, { useRef, useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, HomePageContainer, HomePageWrapper, Input, InputContainer, Title, Error } from './home-page.styles';
+import {
+  Button,
+  HomePageContainer,
+  HomePageWrapper,
+  Input,
+  InputContainer,
+  Title,
+  Error
+} from './home-page.styles';
 import socket from '../../socket';
 
-const HomePage = ({ history }: { history: RouteComponentProps["history"] }) => {
+const HomePage = ({ history }: { history: RouteComponentProps['history'] }) => {
   const roomIDRef: any = useRef();
   const userNameRef: any = useRef();
-  const [error, setError]: [string, Dispatch<SetStateAction<string>>] = useState('');
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    socket.on('VIDEO-error', (error: {error: string}) => {
+    socket.on('VIDEO-error', (error: { error: string }) => {
       setError(error.error);
     });
 
-    socket.on('VIDEO-response', () => { 
+    socket.on('VIDEO-response', () => {
       const roomID: string = roomIDRef.current.value;
       const userName: string = userNameRef.current.value;
 
@@ -27,7 +35,7 @@ const HomePage = ({ history }: { history: RouteComponentProps["history"] }) => {
     const userName: string = userNameRef.current.value;
 
     socket.emit('VIDEO-check-user', { roomID, userName });
-  }
+  };
 
   return (
     <>
@@ -41,7 +49,7 @@ const HomePage = ({ history }: { history: RouteComponentProps["history"] }) => {
             <Input type="text" id="userName" ref={userNameRef} placeholder="User name" />
           </InputContainer>
 
-          <Button onClick={joinToRoomHandler}>Join</Button> 
+          <Button onClick={joinToRoomHandler}>Join</Button>
           {error && <Error>{error}</Error>}
         </HomePageContainer>
       </HomePageWrapper>

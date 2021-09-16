@@ -1,23 +1,28 @@
-import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Peer from 'simple-peer';
 import socket from '../../socket';
 import Chat from '../chat/chat';
 import { ErrorContainer, ParticipantList, VideoPlayerWrapper } from './room.styles';
 import VideoCard from './video-card';
 import { VideoWrapper } from './video-card.styles';
-import { userInfoInterface, userVideoAudioInterface } from 'src/shared/interfaces/user-info.interface';
+import {
+  userInfoInterface,
+  userVideoAudioInterface
+} from 'src/shared/interfaces/user-info.interface';
 import { RouteComponentProps } from 'react-router-dom';
 import { addPeer, createPeer, expandScreen, findPeer, goToBack } from '../../helpers/room';
 import VideoSettings from './room-settings';
 
-const Room = ({ match }: RouteComponentProps<{ roomID?: string}>) => {
+const Room = ({ match }: RouteComponentProps<{ roomID?: string }>) => {
   const currentUser: string = sessionStorage.getItem('user')!;
   const roomID: string = match.params.roomID!;
-  const [peers, setPeers]: [Peer, Dispatch<SetStateAction<Peer>>] = useState([]);
-  const [, setUserVideoAudio]: [userVideoAudioInterface, Dispatch<SetStateAction<userVideoAudioInterface>>] = useState({ localUser: { video: true, audio: true } });
-  const [displayChat, setDisplayChat]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
-  const [screenShare, setScreenShare]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
-  const [error, setError]: [string, Dispatch<SetStateAction<string>>] = useState('');
+  const [peers, setPeers] = useState<Peer>([]);
+  const [, setUserVideoAudio] = useState<userVideoAudioInterface>({
+    localUser: { video: true, audio: true }
+  });
+  const [displayChat, setDisplayChat] = useState<boolean>(false);
+  const [screenShare, setScreenShare] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
   const peersRef: any = useRef([]);
   const userVideoRef: any = useRef();
   const screenTrackRef: any = useRef();
@@ -33,7 +38,7 @@ const Room = ({ match }: RouteComponentProps<{ roomID?: string}>) => {
         userStream.current = stream;
 
         socket.emit('VIDEO-join-room', { roomID, userName: currentUser });
-        socket.on('VIDEO-user-join', (users: {data: userInfoInterface[]}) => {
+        socket.on('VIDEO-user-join', (users: { data: userInfoInterface[] }) => {
           const peers: Peer = [];
           users.data.forEach((user: userInfoInterface) => {
             const { userName, video, audio } = user;
@@ -63,57 +68,76 @@ const Room = ({ match }: RouteComponentProps<{ roomID?: string}>) => {
           setPeers(peers);
         });
 
-        socket.on('VIDEO-receive-call', ({ signal, userID, info }: {signal: any, userID: string, info: userInfoInterface[] }) => {
-          const peerIdx = findPeer(userID, peersRef); 
+        socket.on(
+          'VIDEO-receive-call',
+          ({
+            signal,
+            userID,
+            info
+          }: {
+            signal: any;
+            userID: string;
+            info: userInfoInterface[];
+          }) => {
+            const peerIdx = findPeer(userID, peersRef);
 
-          if (!peerIdx) {
-            const userInfo = info.find((userInfo: userInfoInterface) => userInfo.socket === userID) as userInfoInterface;
-            const { userName, video, audio } = userInfo;
+            if (!peerIdx) {
+              const userInfo = info.find(
+                (userInfo: userInfoInterface) => userInfo.socket === userID
+              ) as userInfoInterface;
+              const { userName, video, audio } = userInfo;
 
-            const peer: Peer = addPeer(signal, userID, stream);
-            peer.userName = userName;
-            peersRef.current.push({
-              peerID: userID,
-              peer,
-              userName
-            });
-            setPeers((users: Peer) => {
-              return [...users, peer];
-            });
-            setUserVideoAudio((preList: userVideoAudioInterface) => {
-              return {
-                ...preList,
-                [peer.userName]: { video, audio },
-              };
-            });
+              const peer: Peer = addPeer(signal, userID, stream);
+              peer.userName = userName;
+              peersRef.current.push({
+                peerID: userID,
+                peer,
+                userName
+              });
+              setPeers((users: Peer) => {
+                return [...users, peer];
+              });
+              setUserVideoAudio((preList: userVideoAudioInterface) => {
+                return {
+                  ...preList,
+                  [peer.userName]: { video, audio }
+                };
+              });
+            }
           }
-        });
+        );
 
-        socket.on('VIDEO-call-accepted', ({ signal, answerID }: { signal: any, answerID: string }) => {
-          const peerIdx: Peer = findPeer(answerID, peersRef);
-          peerIdx.peer.signal(signal);
-        });
+        socket.on(
+          'VIDEO-call-accepted',
+          ({ signal, answerID }: { signal: any; answerID: string }) => {
+            const peerIdx: Peer = findPeer(answerID, peersRef);
+            peerIdx.peer.signal(signal);
+          }
+        );
       })
       .catch(() => {
         setError('Device not found');
       });
 
-    socket.on('VIDEO-toggle-camera', ({ userID, switchTarget }: { userID: string, switchTarget: any }) => {
-      const peerIdx: Peer = findPeer(userID, peersRef);
+    socket.on(
+      'VIDEO-toggle-camera',
+      ({ userID, switchTarget }: { userID: string; switchTarget: any }) => {
+        const peerIdx: Peer = findPeer(userID, peersRef);
 
-      setUserVideoAudio((preList: userVideoAudioInterface) => {
-        let video: boolean = preList[peerIdx.userName].video;
-        let audio: boolean = preList[peerIdx.userName].audio;
+        setUserVideoAudio((preList: userVideoAudioInterface) => {
+          let video: boolean = preList[peerIdx.userName].video;
+          let audio: boolean = preList[peerIdx.userName].audio;
 
-        if (switchTarget === 'video') video = !video;
-        else audio = !audio;
+          if (switchTarget === 'video') video = !video;
+          else audio = !audio;
 
-        return {
-          ...preList,
-          [peerIdx.userName]: { video, audio },
-        };
-      });
-    });
+          return {
+            ...preList,
+            [peerIdx.userName]: { video, audio }
+          };
+        });
+      }
+    );
 
     return () => {
       socket.disconnect();
@@ -144,46 +168,40 @@ const Room = ({ match }: RouteComponentProps<{ roomID?: string}>) => {
 
       return {
         ...preList,
-        localUser: { video: videoSwitch, audio: audioSwitch },
+        localUser: { video: videoSwitch, audio: audioSwitch }
       };
     });
   };
 
   const clickScreenSharing = () => {
     if (!screenShare) {
-      navigator.mediaDevices
-        .getDisplayMedia()
-        .then((stream: MediaStream) => {
-          const screenTrack: MediaStreamTrack = stream.getTracks()[0];
+      navigator.mediaDevices.getDisplayMedia().then((stream: MediaStream) => {
+        const screenTrack: MediaStreamTrack = stream.getTracks()[0];
 
+        peersRef.current.forEach(({ peer }: { peer: Peer }) => {
+          peer.replaceTrack(
+            peer.streams[0].getTracks().find((track: MediaStreamTrack) => track.kind === 'video'),
+            screenTrack,
+            userStream.current
+          );
+        });
+
+        screenTrack.onended = () => {
           peersRef.current.forEach(({ peer }: { peer: Peer }) => {
             peer.replaceTrack(
-              peer.streams[0]
-                .getTracks()
-                .find((track: MediaStreamTrack) => track.kind === 'video'),
               screenTrack,
+              peer.streams[0].getTracks().find((track: MediaStreamTrack) => track.kind === 'video'),
               userStream.current
             );
           });
+          userVideoRef.current.srcObject = userStream.current;
+          setScreenShare(false);
+        };
 
-          screenTrack.onended = () => {
-            peersRef.current.forEach(({ peer }: { peer: Peer }) => {
-              peer.replaceTrack(
-                screenTrack,
-                peer.streams[0]
-                  .getTracks()
-                  .find((track: MediaStreamTrack) => track.kind === 'video'),
-                userStream.current
-              );
-            });
-            userVideoRef.current.srcObject = userStream.current;
-            setScreenShare(false);
-          };
-
-          userVideoRef.current.srcObject = stream;
-          screenTrackRef.current = screenTrack;
-          setScreenShare(true);
-        });
+        userVideoRef.current.srcObject = stream;
+        screenTrackRef.current = screenTrack;
+        setScreenShare(true);
+      });
     } else {
       screenTrackRef.current.onended();
     }
@@ -200,13 +218,17 @@ const Room = ({ match }: RouteComponentProps<{ roomID?: string}>) => {
               muted
               autoPlay
               playsInline
-              size={'fullscreen'} />
+              size={'fullscreen'}
+            />
 
-            {peers &&
+            {peers && (
               <ParticipantList displayChat={displayChat}>
-                {peers && peers.map((peer: Peer, index: number) => <VideoCard key={index} peer={peer} size={'mini'} />)}
+                {peers &&
+                  peers.map((peer: Peer, index: number) => (
+                    <VideoCard key={index} peer={peer} size={'mini'} />
+                  ))}
               </ParticipantList>
-            }
+            )}
             <Chat display={displayChat} roomID={roomID} />
           </VideoPlayerWrapper>
           <VideoSettings
@@ -219,7 +241,6 @@ const Room = ({ match }: RouteComponentProps<{ roomID?: string}>) => {
       ) : (
         <ErrorContainer>{error}</ErrorContainer>
       )}
-      
     </>
   );
 };

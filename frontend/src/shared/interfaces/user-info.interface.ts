@@ -9,5 +9,5 @@ export interface userVideoAudioInterface {
   localUser: {
     video: boolean;
     audio: boolean;
-  }
+  };
 }

@@ -9,7 +9,7 @@ import SettingsPage from '../pages/settings-page/settings-page';
 
 export const CreateRoutes = () => (
   <Switch>
-    <Route path={["/", "/home"]} exact component={HomePage} />
+    <Route path={['/', '/home']} exact component={HomePage} />
     <Route path="/chats" component={ChatsPage} />
     <Route path="/contacts" component={ContactsPage} />
     <Route path="/settings" component={SettingsPage} />

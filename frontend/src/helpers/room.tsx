@@ -21,7 +21,7 @@ export const createPeer = (userId: string, caller: string, stream: MediaStream, 
   });
 
   return peer;
-}
+};
 
 export const addPeer = (signal: any, userID: string, stream: MediaStream) => {
   const peer: Peer = new Peer({
@@ -40,11 +40,11 @@ export const addPeer = (signal: any, userID: string, stream: MediaStream) => {
 
   peer.signal(signal);
   return peer;
-}
+};
 
 export const findPeer = (id: string, peersRef: any): Peer => {
   return peersRef.current.find((peer: Peer) => peer.peerID === id);
-}
+};
 
 export const expandScreen = (event: any) => {
   if (event.target.requestFullscreen) {

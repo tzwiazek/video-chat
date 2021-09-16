@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Icon,
@@ -8,40 +8,35 @@ import {
   VideoSettingsEndMeetingContainer,
   VideoSettingsWrapper
 } from './room-settings.styles';
-import micIcon from "../../assets/images/unmute-mic.svg";
-import muteMicIcon from "../../assets/images/mute-mic.svg";
-import videoCameraIcon from "../../assets/images/video-camera.svg";
-import noVideoCameraIcon from "../../assets/images/no-video-camera.svg";
-import participantsIcon from "../../assets/images/contact.svg";
-import chatIcon from "../../assets/images/chat-on.svg";
-import chatNewMessageIcon from "../../assets/images/chat-off.svg";
+import micIcon from '../../assets/images/unmute-mic.svg';
+import muteMicIcon from '../../assets/images/mute-mic.svg';
+import videoCameraIcon from '../../assets/images/video-camera.svg';
+import noVideoCameraIcon from '../../assets/images/no-video-camera.svg';
+import participantsIcon from '../../assets/images/contact.svg';
+import chatIcon from '../../assets/images/chat-on.svg';
+import chatNewMessageIcon from '../../assets/images/chat-off.svg';
 
-const VideoSettings = ({
-  clickChat,
-  goToBack,
-  toggleCameraAudio,
-  clickScreenSharing
-}) => {
-  const [isMuteMic, setMuteMic]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
-  const [isVideoCameraVisible, setSideoCameraVisible]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
-  const [isChatVisible, setChatVisible]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
+const VideoSettings = ({ clickChat, goToBack, toggleCameraAudio, clickScreenSharing }) => {
+  const [isMuteMic, setMuteMic] = useState<boolean>(false);
+  const [isVideoCameraVisible, setSideoCameraVisible] = useState<boolean>(false);
+  const [isChatVisible, setChatVisible] = useState<boolean>(false);
 
   const cameraAudioHandler = (event: React.MouseEvent<HTMLElement>) => {
-    (event.target as any).setAttribute("data-switch", "audio");
+    (event.target as any).setAttribute('data-switch', 'audio');
     setMuteMic(!isMuteMic);
     toggleCameraAudio(event);
-  }
+  };
 
   const cameraVideoHandler = (event: React.MouseEvent<HTMLElement>) => {
-    (event.target as any).setAttribute("data-switch", "video");
+    (event.target as any).setAttribute('data-switch', 'video');
     setSideoCameraVisible(!isVideoCameraVisible);
     toggleCameraAudio(event);
-  }
+  };
 
   const chatHandler = () => {
     setChatVisible(!isChatVisible);
     clickChat();
-  }
+  };
 
   return (
     <VideoSettingsWrapper>
@@ -81,9 +76,7 @@ const VideoSettings = ({
       <VideoSettingsContainer>
         <IconContainer onClick={clickScreenSharing}>
           <Icon width={30} height={30} src={participantsIcon} />
-          <IconDescription width={50}>
-            Share screen
-          </IconDescription>
+          <IconDescription width={50}>Share screen</IconDescription>
         </IconContainer>
 
         <IconContainer onClick={chatHandler}>
@@ -99,10 +92,9 @@ const VideoSettings = ({
             </>
           )}
         </IconContainer>
-
       </VideoSettingsContainer>
     </VideoSettingsWrapper>
-  )
-}
+  );
+};
 
 export default VideoSettings;
